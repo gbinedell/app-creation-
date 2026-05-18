@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>4-Week Programme</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    padding: 16px;
+    padding-bottom: 80px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  h1 span { color: #4dd0e1; }
+
+  /* Week Header */
+  .week-header {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .week-header h2 { font-size: 17px; color: #fff; }
+  .wh-left { display: flex; align-items: center; gap: 10px; }
+  .tag {
+    font-size: 11px;
+    color: #999;
+    background: #1e1e1e;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #333;
+  }
+  .arrow {
+    font-size: 14px;
+    color: #555;
+    transition: transform 0.3s;
+    margin-left: 8px;
+  }
+  .week-header.open .arrow { transform: rotate(180deg); }
+  .week-content { display: none; padding-bottom: 12px; }
+  .week-content.open { display: block; }
+
+  /* Reset Button */
+  .reset-btn {
+    font-size: 11px;
+    color: #ff5252;
+    background: none;
+    border: 1px solid #ff5252;
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .reset-btn:active { background: #ff525233; }
+
+  /* Day Card */
+  .day-card {
+    background: #111;
+    border-radius: 14px;
+    margin: 8px 0;
+    overflow: hidden;
+    border: 1px solid #1e1e1e;
+  }
+  .day-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .day-header .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .day-header h3 { font-size: 15px; flex: 1; font-weight: 600; }
+  .day-header .arrow2 {
+    font-size: 14px; color: #444;
+    transition: transform 0.3s;
+  }
+  .day-header.open .arrow2 { transform: rotate(180deg); }
+  .push .dot { background: #ff5252; }
+  .pull .dot { background: #448aff; }
+  .legs .dot { background: #69f0ae; }
+  .push .day-header h3 { color: #ff5252; }
+  .pull .day-header h3 { color: #448aff; }
+  .legs .day-header h3 { color: #69f0ae; }
+  .day-body { display: none; padding: 0 14px 14px; }
+  .day-body.open { display: block; }
+
+  /* Section Label */
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #444;
+    margin: 14px 0 6px 2px;
+    font-weight: 700;
+  }
+  .day-body .section-label:first-child { margin-top: 4px; }
+
+  /* Exercise Row */
+  .exercise {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-left: 3px solid #222;
+    transition: opacity 0.3s;
+  }
+  .exercise.done { opacity: 0.35; }
+  .exercise.done .ex-name { text-decoration: line-through; }
+  .push .exercise { border-left-color: #ff5252; }
+  .pull .exercise { border-left-color: #448aff; }
+  .legs .exercise { border-left-color: #69f0ae; }
+
+  /* Checkbox */
+  .ex-check {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 6px;
+    border: 2px solid #444;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .ex-check.checked {
+    background: #4dd0e1;
+    border-color: #4dd0e1;
+  }
+  .ex-check.checked::after {
+    content: '✓';
+    color: #000;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .ex-content { flex: 1; min-width: 0; }
+  .ex-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .ex-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+    transition: color 0.3s;
+  }
+  .exercise.done .ex-name { color: #666; }
+  .ex-sets {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    background: #4dd0e1;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .ex-desc {
+    font-size: 12px;
+    color: #777;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h1><span>💪</span> 4-Week Programme</h1>
+
+<!-- ===================== WEEK 1 ===================== -->
+<div class="week-header open" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 1</h2>
+    <span class="tag">Phase 1 — Establish Weight</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w1')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content open" data-week="w1">
+
+  <!-- PUSH -->
+  <div class="day-card push">
+    <div class="day-header open" onclick="toggleDay(this)">
+      <div class="dot"></div>
+      <h3>Push</h3>
+      <span class="arrow2">▼</span>
+    </div>
+    <div class="day-body open">
+      <div class="section-label">Chest</div>
+      <div class="exercise" data-id="w1-p1">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Machine Incline Chest Press</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Seated machine, handles at upper-chest height. Press forward and up. Targets upper chest.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-p2">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Chest Fly</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Cables at mid-height. Arms slightly bent, squeeze hands together in an arc in front of your chest.</div>
+        </div>
+      </div>
+      <div class="section-label">Shoulders</div>
+      <div class="exercise" data-id="w1-p3">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Machine Shoulder Press</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Seated shoulder press machine. Press handles straight up.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-p4">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Dumbbell Lateral Raises</span><span class="ex-sets">3 × 12</span></div>
+          <div class="ex-desc">Standing, slight lean forward, raise DBs to the side until arms are parallel. Control the negative.</div>
+        </div>
+      </div>
+      <div class="section-label">Triceps</div>
+      <div class="exercise" data-id="w1-p5">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Tricep Extension (Rope)</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Rope on high cable. Elbows pinned to sides, push down and split the rope at the bottom.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-p6">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Seated Tricep Push Downs</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Seated at cable machine, bar or rope. Push down from chest height. No momentum.</div>
+        </div>
+      </div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w1-p7">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Hang from a bar or captain's chair. Raise legs to 90°, slow on the way down.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULL -->
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="dot"></div>
+      <h3>Pull</h3>
+      <span class="arrow2">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Back</div>
+      <div class="exercise" data-id="w1-l1">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Lat Pulldown</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Wide grip, pull bar to upper chest. Lean back slightly, squeeze shoulder blades.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l2">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Standing Cable Pullover</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">High cable, straight bar. Stand facing machine, arms overhead. Pull bar down in arc to thighs — lats do the work.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l3">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Face Pulls</span><span class="ex-sets">3 × 12</span></div>
+          <div class="ex-desc">Rope on high cable. Pull towards face, elbows high, hands beside ears. Rear delts &amp; rotator cuff.</div>
+        </div>
+      </div>
+      <div class="section-label">Biceps</div>
+      <div class="exercise" data-id="w1-l4">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Bicep Curl</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Low cable, straight or EZ bar. Standard curl — elbows pinned to sides.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l5">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Hammer Curl</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Dumbbells with neutral grip (palms facing each other). Curl without rotating. Brachialis &amp; forearms.</div>
+        </div>
+      </div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w1-l6">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Twists</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Cable at chest height, stand side-on, arms extended, rotate torso away. Core does the work.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l7">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Dumbbell Leans</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Stand with DB in one hand, lean sideways, use obliques to pull upright. 12 each side.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGS -->
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="dot"></div>
+      <h3>Legs</h3>
+      <span class="arrow2">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Quads</div>
+      <div class="exercise" data-id="w1-g1">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Hack Squat</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Machine — back against pad, feet shoulder-width. Push through heels. Quad-dominant.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-g2">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Leg Extensions</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Seated machine. Full lockout, squeeze quads at top, slow negative.</div>
+        </div>
+      </div>
+      <div class="section-label">Hamstrings</div>
+      <div class="exercise" data-id="w1-g3">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Lying Leg Curl</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Face-down on machine. Curl heels towards glutes.</div>
+        </div>
+      </div>
+      <div class="section-label">Glutes</div>
+      <div class="exercise" data-id="w1-g4">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Glute Kickback Machine</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Standing or kneeling machine — drive leg back, squeeze glute at top. Alt: low cable with ankle strap.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-g5">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Seated Hip Abduction</span><span class="ex-sets">3 × 12</span></div>
+          <div class="ex-desc">Machine — push knees apart against pads. Outer glutes.</div>
+        </div>
+      </div>
+      <div class="section-label">Calves</div>
+      <div class="exercise" data-id="w1-g6">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Seated Calf Raises</span><span class="ex-sets">3 × 15</span></div>
+          <div class="ex-desc">Seated machine. Balls of feet on platform, push up, 1 sec hold, lower slowly.</div>
+        </div>
+      </div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w1-g7">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Machine Crunches</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Seated crunch machine. Ribs pull towards hips — not just nodding head.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== WEEK 2 ===================== -->
+<div class="week-header" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 2</h2>
+    <span class="tag">Phase 1 — Push Reps Up</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w2')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content" data-week="w2">
+
+  <div class="day-card push">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Push</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w2-p1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Machine Incline Chest Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-p2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Chest Fly</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-p3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Machine Shoulder Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-p4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Dumbbell Lateral Raises</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-p5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Tricep Extension (Rope)</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-p6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Tricep Push Downs</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-p7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Pull</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w2-l1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Lat Pulldown</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-l2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Cable Pullover</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-l3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Face Pulls</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-l4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Bicep Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-l5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hammer Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-l6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Twists</span><span class="ex-sets">4 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-l7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Dumbbell Leans</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Legs</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w2-g1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hack Squat</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-g2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Leg Extensions</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-g3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Lying Leg Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-g4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Glute Kickback Machine</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-g5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Hip Abduction</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-g6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Calf Raises</span><span class="ex-sets">3 × 20</span></div></div></div>
+      <div class="exercise" data-id="w2-g7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Machine Crunches</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== WEEK 3 ===================== -->
+<div class="week-header" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 3</h2>
+    <span class="tag">Phase 2 — New Exercises</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w3')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content" data-week="w3">
+
+  <!-- PUSH -->
+  <div class="day-card push">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Push</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="section-label">Chest</div>
+      <div class="exercise" data-id="w3-p1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Chest Press</span><span class="ex-sets">3 × 8</span></div><div class="ex-desc">Machine — seated, push handles forward at chest height. Constant tension on chest.</div></div></div>
+      <div class="exercise" data-id="w3-p2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Crossovers</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Cables set HIGH. Step forward, pull handles down and together in front of hips. Lower/inner chest.</div></div></div>
+      <div class="section-label">Shoulders</div>
+      <div class="exercise" data-id="w3-p3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Cable Shoulder Press</span><span class="ex-sets">3 × 8</span></div><div class="ex-desc">Low cables, handle each hand at shoulder height. Press straight overhead. Core braced — no arching.</div></div></div>
+      <div class="exercise" data-id="w3-p4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Front Delt Raises</span><span class="ex-sets">3 × 12</span></div><div class="ex-desc">Low cable behind you, single handle. Raise arm straight in front to eye height. One arm at a time.</div></div></div>
+      <div class="section-label">Triceps</div>
+      <div class="exercise" data-id="w3-p5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Overhead Tricep Extension</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Face AWAY from high cable, rope behind head, elbows forward. Extend overhead. Like standing skull crushers.</div></div></div>
+      <div class="exercise" data-id="w3-p6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Overhead Tricep Extension (DB)</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Standing, single DB behind head with both hands. Extend arms up without flaring elbows.</div></div></div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w3-p7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Mat Core / Knee Ups</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">Lie on mat, bring knees to chest, extend legs straight without touching floor. Lower back pressed down.</div></div></div>
+    </div>
+  </div>
+
+  <!-- PULL -->
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Pull</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="section-label">Back</div>
+      <div class="exercise" data-id="w3-l1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Pull-Ups (Weighted / Assisted)</span><span class="ex-sets">3 × 6</span></div><div class="ex-desc">Overhand grip, full hang to chin over bar. Use belt for weight or assisted machine.</div></div></div>
+      <div class="exercise" data-id="w3-l2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Lat Pullover Machine</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Nautilus-style machine. Grip bar above head, pull down in arc to lap. Pure lat isolation.</div></div></div>
+      <div class="exercise" data-id="w3-l3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Reverse Cable Fly</span><span class="ex-sets">3 × 12</span></div><div class="ex-desc">Cables at face height, NO attachments. Grab left cable with right hand &amp; vice versa. Pull apart. Rear delts.</div></div></div>
+      <div class="section-label">Biceps</div>
+      <div class="exercise" data-id="w3-l4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Double Cable Bicep Curl</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Stand between two high cables. Curl hands towards ears — front double bicep pose.</div></div></div>
+      <div class="exercise" data-id="w3-l5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Rope Bicep Curl</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Low cable, rope attachment. Curl up and twist rope outward at top for peak contraction.</div></div></div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w3-l6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Russian Twists</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">Seated on floor, lean back 45°, feet off ground. Rotate plate or DB side to side. 12 each side.</div></div></div>
+      <div class="exercise" data-id="w3-l7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Woodchops</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">High cable, pull diagonally from high to low across body in a chopping motion. 12 each side.</div></div></div>
+    </div>
+  </div>
+
+  <!-- LEGS -->
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Legs</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="section-label">Quads</div>
+      <div class="exercise" data-id="w3-g1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Leg Press</span><span class="ex-sets">3 × 8</span></div><div class="ex-desc">Feet shoulder-width, mid-platform. Push through whole foot. Don't lock knees.</div></div></div>
+      <div class="exercise" data-id="w3-g2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Goblet Squat</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Hold DB or kettlebell at chest, squat deep. Keeps you upright — great for quads &amp; glutes.</div></div></div>
+      <div class="section-label">Hamstrings</div>
+      <div class="exercise" data-id="w3-g3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Single Leg Curl</span><span class="ex-sets">3 × 10 ea</span></div><div class="ex-desc">Lying or seated curl machine, one leg at a time. Fixes left/right imbalances.</div></div></div>
+      <div class="section-label">Glutes</div>
+      <div class="exercise" data-id="w3-g4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Pull-Throughs</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Face AWAY from low cable, rope between legs. Hinge at hips, drive hips forward. Glutes &amp; hamstrings.</div></div></div>
+      <div class="exercise" data-id="w3-g5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Walking Lunges</span><span class="ex-sets">3 × 10 ea</span></div><div class="ex-desc">Hold DBs, step forward into lunge, drive up into next step. Continuous walking.</div></div></div>
+      <div class="section-label">Calves</div>
+      <div class="exercise" data-id="w3-g6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Calf Raises</span><span class="ex-sets">3 × 15</span></div><div class="ex-desc">Smith machine or calf machine. Balls of feet on edge, push high, 2 sec hold at top.</div></div></div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w3-g7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">Hang from bar or captain's chair. Raise legs to 90°, slow on the way down.</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== WEEK 4 ===================== -->
+<div class="week-header" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 4</h2>
+    <span class="tag">Phase 2 — Push Reps Up</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w4')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content" data-week="w4">
+
+  <div class="day-card push">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Push</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w4-p1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Chest Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w4-p2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Crossovers</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-p3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Cable Shoulder Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w4-p4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Front Delt Raises</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w4-p5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Overhead Tricep Extension</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-p6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Overhead Tricep Extension (DB)</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-p7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Mat Core / Knee Ups</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Pull</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w4-l1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Pull-Ups (Weighted / Assisted)</span><span class="ex-sets">3 × 8</span></div></div></div>
+      <div class="exercise" data-id="w4-l2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Lat Pullover Machine</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-l3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Reverse Cable Fly</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w4-l4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Double Cable Bicep Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-l5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Rope Bicep Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-l6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Russian Twists</span><span class="ex-sets">4 × 15</span></div></div></div>
+      <div class="exercise" data-id="w4-l7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Woodchops</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Legs</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w4-g1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Leg Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w4-g2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Goblet Squat</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-g3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Single Leg Curl</span><span class="ex-sets">3 × 12 ea</span></div></div></div>
+      <div class="exercise" data-id="w4-g4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Pull-Throughs</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-g5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Walking Lunges</span><span class="ex-sets">3 × 12 ea</span></div></div></div>
+      <div class="exercise" data-id="w4-g6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Calf Raises</span><span class="ex-sets">3 × 20</span></div></div></div>
+      <div class="exercise" data-id="w4-g7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Toggle week
+function toggleWeek(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Toggle day
+function toggleDay(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Toggle checkbox
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const row = el.closest('.exercise');
+  row.classList.toggle('done');
+  const id = row.getAttribute('data-id');
+  saveState();
+}
+
+// Reset all checkboxes in a week
+function resetWeek(weekId) {
+  const weekEl = document.querySelector('[data-week="'+weekId+'"]');
+  if (!weekEl) return;
+  weekEl.querySelectorAll('.exercise').forEach(function(ex) {
+    ex.classList.remove('done');
+    ex.querySelector('.ex-check').classList.remove('checked');
+  });
+  saveState();
+}
+
+// Save state to localStorage
+function saveState() {
+  const state = {};
+  document.querySelectorAll('.exercise').forEach(function(ex) {
+    const id = ex.getAttribute('data-id');
+    if (id) state[id] = ex.classList.contains('done');
+  });
+  try { localStorage.setItem('gym_prog', JSON.stringify(state)); } catch(e) {}
+}
+
+// Load state from localStorage
+function loadState() {
+  try {
+    const state = JSON.parse(localStorage.getItem('gym_prog'));
+    if (!state) return;
+    document.querySelectorAll('.exercise').forEach(function(ex) {
+      const id = ex.getAttribute('data-id');
+      if (id && state[id]) {
+        ex.classList.add('done');
+        ex.querySelector('.ex-check').classList.add('checked');
+      }
+    });
+  } catch(e) {}
+}
+
+loadState();
+</script>
+
+</body>
+</html>
