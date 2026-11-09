@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+ 
+ 
+<title>4-Week Programme</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    padding: 16px;
+    padding-bottom: 80px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  h1 span { color: #4dd0e1; }
+
+  /* Week Header */
+  .week-header {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .week-header h2 { font-size: 17px; color: #fff; }
+  .wh-left { display: flex; align-items: center; gap: 10px; }
+  .tag {
+    font-size: 11px;
+    color: #999;
+    background: #1e1e1e;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #333;
+  }
+  .arrow {
+    font-size: 14px;
+    color: #555;
+    transition: transform 0.3s;
+    margin-left: 8px;
+  }
+  .week-header.open .arrow { transform: rotate(180deg); }
+  .week-content { display: none; padding-bottom: 12px; }
+  .week-content.open { display: block; }
+
+  /* Reset Button */
+  .reset-btn {
+    font-size: 11px;
+    color: #ff5252;
+    background: none;
+    border: 1px solid #ff5252;
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  .reset-btn:active { background: #ff525233; }
+
+  /* Day Card */
+  .day-card {
+    background: #111;
+    border-radius: 14px;
+    margin: 8px 0;
+    overflow: hidden;
+    border: 1px solid #1e1e1e;
+  }
+  .day-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .day-header .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .day-header h3 { font-size: 15px; flex: 1; font-weight: 600; }
+  .day-header .arrow2 {
+    font-size: 14px; color: #444;
+    transition: transform 0.3s;
+  }
+  .day-header.open .arrow2 { transform: rotate(180deg); }
+  .push .dot { background: #ff5252; }
+  .pull .dot { background: #448aff; }
+  .legs .dot { background: #69f0ae; }
+  .push .day-header h3 { color: #ff5252; }
+  .pull .day-header h3 { color: #448aff; }
+  .legs .day-header h3 { color: #69f0ae; }
+  .day-body { display: none; padding: 0 14px 14px; }
+  .day-body.open { display: block; }
+
+  /* Section Label */
+  .section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #444;
+    margin: 14px 0 6px 2px;
+    font-weight: 700;
+  }
+  .day-body .section-label:first-child { margin-top: 4px; }
+
+  /* Exercise Row */
+  .exercise {
+    background: #0d0d0d;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border-left: 3px solid #222;
+    transition: opacity 0.3s;
+  }
+  .exercise.done { opacity: 0.35; }
+  .exercise.done .ex-name { text-decoration: line-through; }
+  .push .exercise { border-left-color: #ff5252; }
+  .pull .exercise { border-left-color: #448aff; }
+  .legs .exercise { border-left-color: #69f0ae; }
+
+  /* Checkbox */
+  .ex-check {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 6px;
+    border: 2px solid #444;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .ex-check.checked {
+    background: #4dd0e1;
+    border-color: #4dd0e1;
+  }
+  .ex-check.checked::after {
+    content: '✓';
+    color: #000;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .ex-content { flex: 1; min-width: 0; }
+  .ex-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .ex-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+    transition: color 0.3s;
+  }
+  .exercise.done .ex-name { color: #666; }
+  .ex-sets {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    background: #4dd0e1;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .ex-desc {
+    font-size: 12px;
+    color: #777;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  /* ===== v2 additions ===== */
+  .top-bar { display: flex; justify-content: center; gap: 8px; margin: -8px 0 16px; }
+  .top-btn {
+    font-size: 12px; color: #4dd0e1; background: #141414;
+    border: 1px solid #2a2a2a; border-radius: 20px; padding: 7px 16px; cursor: pointer;
+  }
+  .top-btn:active { background: #1e2a2c; }
+  .ex-meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .ex-kg {
+    width: 64px; background: #141414; border: 1px solid #2a2a2a; border-radius: 8px;
+    color: #4dd0e1; font-size: 14px; font-weight: 700; padding: 6px 8px; text-align: center;
+  }
+  .ex-kg:focus { outline: none; border-color: #4dd0e1; }
+  .ex-kg::placeholder { color: #444; font-weight: 400; }
+  .kg-label { font-size: 11px; color: #555; margin-left: -5px; }
+  .ex-last { font-size: 11px; color: #666; }
+  .ex-last .up { color: #69f0ae; } .ex-last .down { color: #ff5252; } .ex-last .same { color: #888; }
+  .ex-info-btn {
+    font-size: 11px; color: #999; background: #1e1e1e; border: 1px solid #333;
+    border-radius: 20px; padding: 4px 10px; cursor: pointer; margin-left: auto; flex-shrink: 0;
+  }
+  .ex-info-btn:active { background: #2a2a2a; }
+  .ex-info { display: none; margin-top: 8px; background: #111; border: 1px solid #222; border-radius: 10px; padding: 10px 12px; }
+  .ex-info.open { display: block; }
+  .ex-info ol { margin: 4px 0 8px 18px; }
+  .ex-info li { font-size: 12px; color: #aaa; line-height: 1.55; margin-bottom: 3px; }
+  .ex-info .mistake { font-size: 12px; color: #ff8a80; line-height: 1.5; margin: 6px 0 8px; }
+  .ex-info .mistake b { color: #ff5252; font-weight: 600; }
+  .demo-link {
+    display: inline-block; font-size: 12px; color: #4dd0e1; text-decoration: none;
+    border: 1px solid #4dd0e1; border-radius: 20px; padding: 5px 12px; margin: 2px 6px 6px 0;
+  }
+  .demo-link:active { background: #4dd0e133; }
+  .swap-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #444; margin: 8px 0 4px; font-weight: 700; }
+  .swap-btn {
+    display: inline-block; font-size: 12px; color: #ccc; background: #1a1a1a;
+    border: 1px solid #333; border-radius: 20px; padding: 5px 12px; margin: 0 6px 6px 0; cursor: pointer;
+  }
+  .swap-btn:active { background: #2a2a2a; }
+  .swap-btn.restore { color: #ffb74d; border-color: #5a4020; }
+  .swapped-note { font-size: 10px; color: #ffb74d; margin-top: 3px; }
+  /* Progress modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 50; padding: 24px 14px; overflow-y: auto;
+  }
+  .modal-overlay.open { display: block; }
+  .modal { background: #141414; border: 1px solid #2a2a2a; border-radius: 16px; padding: 18px 16px 22px; max-width: 480px; margin: 0 auto; }
+  .modal h2 { font-size: 17px; color: #fff; margin-bottom: 4px; }
+  .modal .sub { font-size: 12px; color: #777; margin-bottom: 14px; line-height: 1.5; }
+  .prog-row { margin-bottom: 14px; }
+  .prog-name { font-size: 13px; font-weight: 600; color: #ddd; margin-bottom: 4px; }
+  .prog-hist { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .prog-hist .up { color: #69f0ae; } .prog-hist .down { color: #ff5252; }
+  .prog-bars { display: flex; align-items: flex-end; gap: 4px; height: 44px; }
+  .prog-bar { flex: 1; max-width: 40px; background: #4dd0e1; border-radius: 4px 4px 0 0; min-height: 3px; position: relative; }
+  .prog-bar span { position: absolute; bottom: -15px; left: 0; right: 0; text-align: center; font-size: 9px; color: #555; }
+  .prog-empty { font-size: 13px; color: #666; text-align: center; padding: 24px 0; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+  .modal-btn {
+    flex: 1; min-width: 120px; font-size: 13px; font-weight: 600; text-align: center;
+    border-radius: 10px; padding: 11px 8px; cursor: pointer; text-decoration: none;
+  }
+  .modal-btn.primary { background: #4dd0e1; color: #000; border: none; }
+  .modal-btn.ghost { background: none; color: #999; border: 1px solid #333; }
+  .sync-note { font-size: 11px; color: #555; margin-top: 10px; line-height: 1.5; text-align: center; }
+
+
+  /* ===== v3: exercise diagrams ===== */
+  .ex-diagram { display: flex; gap: 12px; align-items: center; background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 10px; padding: 10px 12px; margin: 2px 0 10px; }
+  .dia-figs { display: flex; gap: 6px; flex-shrink: 0; }
+  .dia-fig { width: 42px; }
+  .dia-cap { font-size: 8px; color: #444; text-align: center; letter-spacing: 1.5px; margin-top: 3px; }
+  .dia-side { flex: 1; min-width: 0; }
+  .dia-equip { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #ccc; margin-bottom: 5px; }
+  .dia-equip svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .dia-targets { font-size: 11px; color: #777; line-height: 1.5; }
+  .dia-targets b { color: #4dd0e1; font-weight: 600; }
+
+</style>
+</head>
+<body>
+
+<h1><span>💪</span> 4-Week Programme</h1>
+
+<div class="top-bar">
+  <button class="top-btn" onclick="openProgress()">📈 Progress</button>
+</div>
+
+<div class="modal-overlay" id="progressModal" onclick="if(event.target===this)closeProgress()">
+  <div class="modal">
+    <h2>📈 Weight Progress</h2>
+    <div class="sub">Weights you have logged per exercise, week by week. Hit all your reps at a weight? Nudge it up next week - small jumps, same reps.</div>
+    <div id="progBody"></div>
+    <div class="modal-actions">
+      <a class="modal-btn primary" id="syncLink" href="#" onclick="return doSync(event)">Send log to Instinct</a>
+      <button class="modal-btn ghost" onclick="copyLog()">Copy log</button>
+      <button class="modal-btn ghost" onclick="closeProgress()">Close</button>
+    </div>
+    <div class="sync-note" id="syncNote">"Send log to Instinct" opens WhatsApp with your weights pre-filled - just tap send. Instinct uses it to keep your programme shifting and growing.</div>
+  </div>
+</div>
+
+
+<!-- ===================== WEEK 1 ===================== -->
+<div class="week-header open" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 1</h2>
+    <span class="tag">Phase 1 — Establish Weight</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w1')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content open" data-week="w1">
+
+  <!-- PUSH -->
+  <div class="day-card push">
+    <div class="day-header open" onclick="toggleDay(this)">
+      <div class="dot"></div>
+      <h3>Push</h3>
+      <span class="arrow2">▼</span>
+    </div>
+    <div class="day-body open">
+      <div class="section-label">Chest</div>
+      <div class="exercise" data-id="w1-p1">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Machine Incline Chest Press</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Seated machine, handles at upper-chest height. Press forward and up. Targets upper chest.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-p2">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Chest Fly</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Cables at mid-height. Arms slightly bent, squeeze hands together in an arc in front of your chest.</div>
+        </div>
+      </div>
+      <div class="section-label">Shoulders</div>
+      <div class="exercise" data-id="w1-p3">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Machine Shoulder Press</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Seated shoulder press machine. Press handles straight up.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-p4">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Dumbbell Lateral Raises</span><span class="ex-sets">3 × 12</span></div>
+          <div class="ex-desc">Standing, slight lean forward, raise DBs to the side until arms are parallel. Control the negative.</div>
+        </div>
+      </div>
+      <div class="section-label">Triceps</div>
+      <div class="exercise" data-id="w1-p5">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Tricep Extension (Rope)</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Rope on high cable. Elbows pinned to sides, push down and split the rope at the bottom.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-p6">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Seated Tricep Push Downs</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Seated at cable machine, bar or rope. Push down from chest height. No momentum.</div>
+        </div>
+      </div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w1-p7">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Hang from a bar or captain's chair. Raise legs to 90°, slow on the way down.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULL -->
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="dot"></div>
+      <h3>Pull</h3>
+      <span class="arrow2">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Back</div>
+      <div class="exercise" data-id="w1-l1">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Lat Pulldown</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Wide grip, pull bar to upper chest. Lean back slightly, squeeze shoulder blades.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l2">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Standing Cable Pullover</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">High cable, straight bar. Stand facing machine, arms overhead. Pull bar down in arc to thighs — lats do the work.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l3">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Face Pulls</span><span class="ex-sets">3 × 12</span></div>
+          <div class="ex-desc">Rope on high cable. Pull towards face, elbows high, hands beside ears. Rear delts &amp; rotator cuff.</div>
+        </div>
+      </div>
+      <div class="section-label">Biceps</div>
+      <div class="exercise" data-id="w1-l4">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Bicep Curl</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Low cable, straight or EZ bar. Standard curl — elbows pinned to sides.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l5">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Hammer Curl</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Dumbbells with neutral grip (palms facing each other). Curl without rotating. Brachialis &amp; forearms.</div>
+        </div>
+      </div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w1-l6">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Cable Twists</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Cable at chest height, stand side-on, arms extended, rotate torso away. Core does the work.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-l7">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Dumbbell Leans</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Stand with DB in one hand, lean sideways, use obliques to pull upright. 12 each side.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGS -->
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="dot"></div>
+      <h3>Legs</h3>
+      <span class="arrow2">▼</span>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Quads</div>
+      <div class="exercise" data-id="w1-g1">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Hack Squat</span><span class="ex-sets">3 × 8</span></div>
+          <div class="ex-desc">Machine — back against pad, feet shoulder-width. Push through heels. Quad-dominant.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-g2">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Leg Extensions</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Seated machine. Full lockout, squeeze quads at top, slow negative.</div>
+        </div>
+      </div>
+      <div class="section-label">Hamstrings</div>
+      <div class="exercise" data-id="w1-g3">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Lying Leg Curl</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Face-down on machine. Curl heels towards glutes.</div>
+        </div>
+      </div>
+      <div class="section-label">Glutes</div>
+      <div class="exercise" data-id="w1-g4">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Glute Kickback Machine</span><span class="ex-sets">3 × 10</span></div>
+          <div class="ex-desc">Standing or kneeling machine — drive leg back, squeeze glute at top. Alt: low cable with ankle strap.</div>
+        </div>
+      </div>
+      <div class="exercise" data-id="w1-g5">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Seated Hip Abduction</span><span class="ex-sets">3 × 12</span></div>
+          <div class="ex-desc">Machine — push knees apart against pads. Outer glutes.</div>
+        </div>
+      </div>
+      <div class="section-label">Calves</div>
+      <div class="exercise" data-id="w1-g6">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Seated Calf Raises</span><span class="ex-sets">3 × 15</span></div>
+          <div class="ex-desc">Seated machine. Balls of feet on platform, push up, 1 sec hold, lower slowly.</div>
+        </div>
+      </div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w1-g7">
+        <div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div>
+        <div class="ex-content">
+          <div class="ex-top"><span class="ex-name">Machine Crunches</span><span class="ex-sets">4 × 12</span></div>
+          <div class="ex-desc">Seated crunch machine. Ribs pull towards hips — not just nodding head.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== WEEK 2 ===================== -->
+<div class="week-header" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 2</h2>
+    <span class="tag">Phase 1 — Push Reps Up</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w2')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content" data-week="w2">
+
+  <div class="day-card push">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Push</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w2-p1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Machine Incline Chest Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-p2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Chest Fly</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-p3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Machine Shoulder Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-p4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Dumbbell Lateral Raises</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-p5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Tricep Extension (Rope)</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-p6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Tricep Push Downs</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-p7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Pull</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w2-l1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Lat Pulldown</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-l2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Cable Pullover</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-l3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Face Pulls</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-l4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Bicep Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-l5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hammer Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-l6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Twists</span><span class="ex-sets">4 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-l7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Dumbbell Leans</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Legs</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w2-g1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hack Squat</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w2-g2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Leg Extensions</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-g3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Lying Leg Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-g4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Glute Kickback Machine</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w2-g5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Hip Abduction</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w2-g6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Calf Raises</span><span class="ex-sets">3 × 20</span></div></div></div>
+      <div class="exercise" data-id="w2-g7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Machine Crunches</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== WEEK 3 ===================== -->
+<div class="week-header" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 3</h2>
+    <span class="tag">Phase 2 — New Exercises</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w3')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content" data-week="w3">
+
+  <!-- PUSH -->
+  <div class="day-card push">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Push</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="section-label">Chest</div>
+      <div class="exercise" data-id="w3-p1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Chest Press</span><span class="ex-sets">3 × 8</span></div><div class="ex-desc">Machine — seated, push handles forward at chest height. Constant tension on chest.</div></div></div>
+      <div class="exercise" data-id="w3-p2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Crossovers</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Cables set HIGH. Step forward, pull handles down and together in front of hips. Lower/inner chest.</div></div></div>
+      <div class="section-label">Shoulders</div>
+      <div class="exercise" data-id="w3-p3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Cable Shoulder Press</span><span class="ex-sets">3 × 8</span></div><div class="ex-desc">Low cables, handle each hand at shoulder height. Press straight overhead. Core braced — no arching.</div></div></div>
+      <div class="exercise" data-id="w3-p4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Front Delt Raises</span><span class="ex-sets">3 × 12</span></div><div class="ex-desc">Low cable behind you, single handle. Raise arm straight in front to eye height. One arm at a time.</div></div></div>
+      <div class="section-label">Triceps</div>
+      <div class="exercise" data-id="w3-p5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Overhead Tricep Extension</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Face AWAY from high cable, rope behind head, elbows forward. Extend overhead. Like standing skull crushers.</div></div></div>
+      <div class="exercise" data-id="w3-p6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Overhead Tricep Extension (DB)</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Standing, single DB behind head with both hands. Extend arms up without flaring elbows.</div></div></div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w3-p7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Mat Core / Knee Ups</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">Lie on mat, bring knees to chest, extend legs straight without touching floor. Lower back pressed down.</div></div></div>
+    </div>
+  </div>
+
+  <!-- PULL -->
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Pull</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="section-label">Back</div>
+      <div class="exercise" data-id="w3-l1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Pull-Ups (Weighted / Assisted)</span><span class="ex-sets">3 × 6</span></div><div class="ex-desc">Overhand grip, full hang to chin over bar. Use belt for weight or assisted machine.</div></div></div>
+      <div class="exercise" data-id="w3-l2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Lat Pullover Machine</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Nautilus-style machine. Grip bar above head, pull down in arc to lap. Pure lat isolation.</div></div></div>
+      <div class="exercise" data-id="w3-l3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Reverse Cable Fly</span><span class="ex-sets">3 × 12</span></div><div class="ex-desc">Cables at face height, NO attachments. Grab left cable with right hand &amp; vice versa. Pull apart. Rear delts.</div></div></div>
+      <div class="section-label">Biceps</div>
+      <div class="exercise" data-id="w3-l4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Double Cable Bicep Curl</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Stand between two high cables. Curl hands towards ears — front double bicep pose.</div></div></div>
+      <div class="exercise" data-id="w3-l5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Rope Bicep Curl</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Low cable, rope attachment. Curl up and twist rope outward at top for peak contraction.</div></div></div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w3-l6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Russian Twists</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">Seated on floor, lean back 45°, feet off ground. Rotate plate or DB side to side. 12 each side.</div></div></div>
+      <div class="exercise" data-id="w3-l7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Woodchops</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">High cable, pull diagonally from high to low across body in a chopping motion. 12 each side.</div></div></div>
+    </div>
+  </div>
+
+  <!-- LEGS -->
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Legs</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="section-label">Quads</div>
+      <div class="exercise" data-id="w3-g1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Leg Press</span><span class="ex-sets">3 × 8</span></div><div class="ex-desc">Feet shoulder-width, mid-platform. Push through whole foot. Don't lock knees.</div></div></div>
+      <div class="exercise" data-id="w3-g2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Goblet Squat</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Hold DB or kettlebell at chest, squat deep. Keeps you upright — great for quads &amp; glutes.</div></div></div>
+      <div class="section-label">Hamstrings</div>
+      <div class="exercise" data-id="w3-g3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Single Leg Curl</span><span class="ex-sets">3 × 10 ea</span></div><div class="ex-desc">Lying or seated curl machine, one leg at a time. Fixes left/right imbalances.</div></div></div>
+      <div class="section-label">Glutes</div>
+      <div class="exercise" data-id="w3-g4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Pull-Throughs</span><span class="ex-sets">3 × 10</span></div><div class="ex-desc">Face AWAY from low cable, rope between legs. Hinge at hips, drive hips forward. Glutes &amp; hamstrings.</div></div></div>
+      <div class="exercise" data-id="w3-g5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Walking Lunges</span><span class="ex-sets">3 × 10 ea</span></div><div class="ex-desc">Hold DBs, step forward into lunge, drive up into next step. Continuous walking.</div></div></div>
+      <div class="section-label">Calves</div>
+      <div class="exercise" data-id="w3-g6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Calf Raises</span><span class="ex-sets">3 × 15</span></div><div class="ex-desc">Smith machine or calf machine. Balls of feet on edge, push high, 2 sec hold at top.</div></div></div>
+      <div class="section-label">Core</div>
+      <div class="exercise" data-id="w3-g7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 12</span></div><div class="ex-desc">Hang from bar or captain's chair. Raise legs to 90°, slow on the way down.</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== WEEK 4 ===================== -->
+<div class="week-header" onclick="toggleWeek(this)">
+  <div class="wh-left">
+    <h2>Week 4</h2>
+    <span class="tag">Phase 2 — Push Reps Up</span>
+  </div>
+  <div style="display:flex;align-items:center;">
+    <button class="reset-btn" onclick="event.stopPropagation();resetWeek('w4')">Reset</button>
+    <span class="arrow">▼</span>
+  </div>
+</div>
+<div class="week-content" data-week="w4">
+
+  <div class="day-card push">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Push</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w4-p1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Chest Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w4-p2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Crossovers</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-p3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Cable Shoulder Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w4-p4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Front Delt Raises</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w4-p5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Overhead Tricep Extension</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-p6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Overhead Tricep Extension (DB)</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-p7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Mat Core / Knee Ups</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card pull">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Pull</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w4-l1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Pull-Ups (Weighted / Assisted)</span><span class="ex-sets">3 × 8</span></div></div></div>
+      <div class="exercise" data-id="w4-l2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Seated Lat Pullover Machine</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-l3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Reverse Cable Fly</span><span class="ex-sets">3 × 15</span></div></div></div>
+      <div class="exercise" data-id="w4-l4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Double Cable Bicep Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-l5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Rope Bicep Curl</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-l6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Russian Twists</span><span class="ex-sets">4 × 15</span></div></div></div>
+      <div class="exercise" data-id="w4-l7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Woodchops</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card legs">
+    <div class="day-header" onclick="toggleDay(this)"><div class="dot"></div><h3>Legs</h3><span class="arrow2">▼</span></div>
+    <div class="day-body">
+      <div class="exercise" data-id="w4-g1"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Leg Press</span><span class="ex-sets">3 × 10</span></div></div></div>
+      <div class="exercise" data-id="w4-g2"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Goblet Squat</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-g3"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Single Leg Curl</span><span class="ex-sets">3 × 12 ea</span></div></div></div>
+      <div class="exercise" data-id="w4-g4"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Cable Pull-Throughs</span><span class="ex-sets">3 × 12</span></div></div></div>
+      <div class="exercise" data-id="w4-g5"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Walking Lunges</span><span class="ex-sets">3 × 12 ea</span></div></div></div>
+      <div class="exercise" data-id="w4-g6"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Standing Calf Raises</span><span class="ex-sets">3 × 20</span></div></div></div>
+      <div class="exercise" data-id="w4-g7"><div class="ex-check" onclick="event.stopPropagation();toggleCheck(this)"></div><div class="ex-content"><div class="ex-top"><span class="ex-name">Hanging Leg Raises</span><span class="ex-sets">4 × 15</span></div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Toggle week
+function toggleWeek(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Toggle day
+function toggleDay(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Toggle checkbox
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  const row = el.closest('.exercise');
+  row.classList.toggle('done');
+  const id = row.getAttribute('data-id');
+  saveState();
+}
+
+// Reset all checkboxes in a week
+function resetWeek(weekId) {
+  const weekEl = document.querySelector('[data-week="'+weekId+'"]');
+  if (!weekEl) return;
+  weekEl.querySelectorAll('.exercise').forEach(function(ex) {
+    ex.classList.remove('done');
+    ex.querySelector('.ex-check').classList.remove('checked');
+  });
+  saveState();
+}
+
+// Save state to localStorage
+function saveState() {
+  const state = {};
+  document.querySelectorAll('.exercise').forEach(function(ex) {
+    const id = ex.getAttribute('data-id');
+    if (id) state[id] = ex.classList.contains('done');
+  });
+  try { localStorage.setItem('gym_prog', JSON.stringify(state)); } catch(e) {}
+}
+
+// Load state from localStorage
+function loadState() {
+  try {
+    const state = JSON.parse(localStorage.getItem('gym_prog'));
+    if (!state) return;
+    document.querySelectorAll('.exercise').forEach(function(ex) {
+      const id = ex.getAttribute('data-id');
+      if (id && state[id]) {
+        ex.classList.add('done');
+        ex.querySelector('.ex-check').classList.add('checked');
+      }
+    });
+  } catch(e) {}
+}
+
+loadState();
+
+/* ===== v2: weight logging, exercise info + demos, swaps, progress, sync ===== */
+var EXDB = {"Machine Incline Chest Press": {"d": "Seated machine, handles at upper-chest height. Press forward and up. Targets upper chest.", "s": ["Set the seat so handles line up with your upper chest.", "Feet flat, back and head against the pad, shoulders pulled down.", "Press forward and slightly up until arms are almost straight, then lower slowly over 2-3 seconds."], "m": "Don't let your shoulders roll forward at the top - keep them pinned back and down.", "a": ["Incline Dumbbell Press", "Smith Machine Incline Press"]}, "Cable Chest Fly": {"d": "Cables at mid-height. Arms slightly bent, squeeze hands together in an arc in front of your chest.", "s": ["Set both pulleys to chest height, grab a handle in each hand and take one step forward.", "Keep a soft bend in your elbows - the same angle the whole set.", "Sweep your hands together in a wide arc in front of your chest, squeeze 1 second, return with control."], "m": "Don't turn it into a press - if your elbows keep bending more, the weight is too heavy.", "a": ["Pec Deck Machine", "Incline Dumbbell Fly"]}, "Machine Shoulder Press": {"d": "Seated shoulder press machine. Press handles straight up.", "s": ["Set the seat so handles start at ear height.", "Grip handles, brace your core, ribs down.", "Press straight up until arms are almost locked, lower slowly to ear height."], "m": "Don't arch your lower back to move the weight - drop the weight instead.", "a": ["Seated Dumbbell Shoulder Press", "Smith Machine Shoulder Press"]}, "Dumbbell Lateral Raises": {"d": "Standing, slight lean forward, raise DBs to the side until arms are parallel. Control the negative.", "s": ["Stand tall, dumbbells at your sides, palms facing in, slight lean forward.", "Raise both arms out to the side to shoulder height, elbows slightly bent, lead with the elbows.", "Lower over 2-3 seconds - the negative is half the exercise."], "m": "Don't swing or shrug - if you need momentum, go lighter.", "a": ["Cable Lateral Raise (single arm)", "Lateral Raise Machine"]}, "Cable Tricep Extension (Rope)": {"d": "Rope on high cable. Elbows pinned to sides, push down and split the rope at the bottom.", "s": ["Attach the rope to a high pulley, elbows tucked tight to your ribs.", "Push the rope down until arms are straight, splitting the ends apart at the bottom.", "Let it come back up only to about 90 degrees at the elbow, keeping tension on."], "m": "Don't let your elbows drift forward - only your forearms should move.", "a": ["Straight-Bar Tricep Pushdown", "Single-Arm Cable Pushdown"]}, "Seated Tricep Push Downs": {"d": "Seated at cable machine, bar or rope. Push down from chest height. No momentum.", "s": ["Sit tall facing the cable stack, bar or rope at chest height.", "Pin elbows to your sides and push the weight down until arms are straight.", "Squeeze the triceps at the bottom, then return slowly."], "m": "Don't lean over the bar and use bodyweight - stay upright and strict.", "a": ["Overhead Rope Extension", "Assisted Bench Dips"]}, "Hanging Leg Raises": {"d": "Hang from a bar or captain's chair. Raise legs to 90 degrees, slow on the way down.", "s": ["Hang from a pull-up bar with a firm grip, body still.", "Curl your pelvis up and raise your legs to 90 degrees (bend knees to make it easier).", "Lower over 2-3 seconds without swinging."], "m": "Don't swing your legs up using momentum - pause between reps if you need to.", "a": ["Captain's Chair Knee Raises", "Lying Leg Raises"]}, "Lat Pulldown": {"d": "Wide grip, pull bar to upper chest. Lean back slightly, squeeze shoulder blades.", "s": ["Grip the bar wider than shoulders, thighs under the pads.", "Lean back about 15 degrees, chest up.", "Pull the bar to your upper chest, squeezing shoulder blades together, then return slowly."], "m": "Don't pull the bar behind your neck or rock back and forth.", "a": ["Assisted Pull-Up Machine", "Single-Arm Cable Pulldown"]}, "Standing Cable Pullover": {"d": "High cable, straight bar. Stand facing machine, arms overhead. Pull bar down in arc to thighs - lats do the work.", "s": ["Straight bar on the top pulley, stand a step back facing the stack, arms overhead.", "Keep arms nearly straight and pull the bar down in a big arc to your thighs.", "Squeeze your lats at the bottom, return slowly overhead."], "m": "Don't bend your elbows and turn it into a tricep pushdown.", "a": ["Dumbbell Pullover (on bench)", "Lat Pullover Machine"]}, "Face Pulls": {"d": "Rope on high cable. Pull towards face, elbows high, hands beside ears. Rear delts & rotator cuff.", "s": ["Rope at upper-chest/face height, grab both ends palms-down.", "Pull the rope toward your forehead, elbows high and wide, hands ending beside your ears.", "Rotate out slightly at the end, squeeze rear delts, return slowly."], "m": "Don't go heavy - this is a strict, light movement for shoulder health.", "a": ["Reverse Pec Deck", "Bent-Over Rear Delt Fly"]}, "Cable Bicep Curl": {"d": "Low cable, straight or EZ bar. Standard curl - elbows pinned to sides.", "s": ["Bar on the low pulley, stand tall, elbows tucked to your sides.", "Curl the bar to shoulder height without moving your upper arms.", "Squeeze at the top, lower over 2-3 seconds."], "m": "Don't lean back and swing the weight up.", "a": ["EZ-Bar Curl", "Standing Dumbbell Curl"]}, "Hammer Curl": {"d": "Dumbbells with neutral grip (palms facing each other). Curl without rotating. Brachialis & forearms.", "s": ["Stand tall, dumbbells at your sides, palms facing each other.", "Curl up keeping that neutral grip - no twisting.", "Lower slowly, elbows pinned to your sides throughout."], "m": "Don't swing the dumbbells or flare your elbows out.", "a": ["Rope Cable Hammer Curl", "Cross-Body Hammer Curl"]}, "Cable Twists": {"d": "Cable at chest height, stand side-on, arms extended, rotate torso away. Core does the work.", "s": ["Stand side-on to the stack, cable at chest height, both hands on the handle, arms extended.", "Rotate your torso away from the machine, keeping hips facing forward.", "Return slowly - resist the weight on the way back."], "m": "Don't pull with your arms - arms stay straight, only your torso rotates.", "a": ["Seated Russian Twists", "Cable Woodchops"]}, "Dumbbell Leans": {"d": "Stand with DB in one hand, lean sideways, use obliques to pull upright. 12 each side.", "s": ["Stand tall holding one dumbbell at your side, other hand behind your head or on your hip.", "Lean sideways toward the dumbbell as far as comfortable.", "Crunch your obliques to pull yourself back upright and slightly past centre."], "m": "Don't lean forward or backward - keep the movement purely sideways.", "a": ["Cable Side Bend", "Side Plank Hip Dips"]}, "Hack Squat": {"d": "Machine - back against pad, feet shoulder-width. Push through heels. Quad-dominant.", "s": ["Shoulders under the pads, back flat against the rest, feet shoulder-width slightly forward.", "Unlock the safety handles and lower until thighs are about parallel.", "Push through your heels to stand, without locking knees hard at the top."], "m": "Don't let your lower back lift off the pad at the bottom.", "a": ["Leg Press", "Smith Machine Squat"]}, "Leg Extensions": {"d": "Seated machine. Full lockout, squeeze quads at top, slow negative.", "s": ["Adjust so the pad sits on your lower shins and knees line up with the pivot.", "Extend your legs fully and squeeze the quads hard for 1 second.", "Lower over 2-3 seconds, keeping hips planted."], "m": "Don't kick the weight up with momentum.", "a": ["Single-Leg Leg Extension", "Bulgarian Split Squats"]}, "Lying Leg Curl": {"d": "Face-down on machine. Curl heels towards glutes.", "s": ["Lie face down, pad just above your heels, knees just off the pad edge.", "Curl your heels toward your glutes as far as they go.", "Squeeze at the top, lower slowly without letting hips lift."], "m": "Don't let your hips rise off the pad to help lift the weight.", "a": ["Seated Leg Curl", "Stability Ball Leg Curl"]}, "Glute Kickback Machine": {"d": "Standing or kneeling machine - drive leg back, squeeze glute at top. Alt: low cable with ankle strap.", "s": ["Set up with your working leg on the pad/lever, core braced.", "Drive the leg straight back and slightly up, squeezing the glute at full extension.", "Return with control - no swinging between reps."], "m": "Don't arch your lower back to get the leg higher.", "a": ["Cable Kickback (ankle strap)", "Machine/Smith Hip Thrust"]}, "Seated Hip Abduction": {"d": "Machine - push knees apart against pads. Outer glutes.", "s": ["Sit with knees against the pads, back tall, holding the handles.", "Push your knees apart as wide as possible, pause 1 second.", "Return slowly - control the weight all the way in."], "m": "Don't use a quick bouncing rep - slow and wide wins here.", "a": ["Standing Cable Hip Abduction", "Band Clamshells"]}, "Seated Calf Raises": {"d": "Seated machine. Balls of feet on platform, push up, 1 sec hold, lower slowly.", "s": ["Balls of your feet on the platform edge, pad snug on your thighs.", "Lower your heels as far as they go for a full stretch.", "Push up onto your toes, hold 1 second at the top, lower slowly."], "m": "Don't bounce at the bottom - the stretch position is where the growth happens.", "a": ["Standing Calf Raise Machine", "Leg Press Calf Press"]}, "Machine Crunches": {"d": "Seated crunch machine. Ribs pull towards hips - not just nodding head.", "s": ["Set the pad on your upper chest, feet anchored.", "Curl your ribs down toward your hips, breathing out hard.", "Pause at the bottom of the crunch, return slowly with control."], "m": "Don't just nod your head or pull with your arms - curl the spine.", "a": ["Kneeling Cable Crunch", "Decline Bench Crunch"]}, "Seated Chest Press": {"d": "Machine - seated, push handles forward at chest height. Constant tension on chest.", "s": ["Set the seat so handles are at mid-chest height.", "Press forward until arms are almost straight, squeezing your chest.", "Return slowly until you feel a stretch across the chest."], "m": "Don't slam the plates down between reps - keep constant tension.", "a": ["Flat Dumbbell Press", "Weighted Push-Ups"]}, "Cable Crossovers": {"d": "Cables set HIGH. Step forward, pull handles down and together in front of hips. Lower/inner chest.", "s": ["Pulleys above head height, step forward into a split stance.", "Arms out wide, soft elbows, pull the handles down and together in front of your hips.", "Cross slightly at the bottom, squeeze 1 second, return with control."], "m": "Don't straighten your arms too much or turn it into a pulldown.", "a": ["Low-to-High Cable Fly", "Pec Deck Machine"]}, "Standing Cable Shoulder Press": {"d": "Low cables, handle each hand at shoulder height. Press straight overhead. Core braced - no arching.", "s": ["Face away from the stack or between two low cables, handles at shoulder height.", "Brace your core and glutes hard, ribs down.", "Press both handles overhead until arms are straight, lower slowly."], "m": "Don't arch your back as it gets heavy - that is your core giving in, not your shoulders.", "a": ["Standing Dumbbell Press", "Landmine Press"]}, "Cable Front Delt Raises": {"d": "Low cable behind you, single handle. Raise arm straight in front to eye height. One arm at a time.", "s": ["Stand facing away from a low pulley, handle in one hand, arm down.", "Raise your straight arm in front of you to about eye height.", "Lower slowly - do not let the weight just drop."], "m": "Don't lean back and swing - the front delt does all the work.", "a": ["Dumbbell Front Raise", "Plate Front Raise"]}, "Cable Overhead Tricep Extension": {"d": "Face AWAY from high cable, rope behind head, elbows forward. Extend overhead. Like standing skull crushers.", "s": ["Face away from the high pulley, rope held behind your head, elbows pointing forward.", "Step forward into a staggered stance for balance.", "Extend your arms overhead until straight, then return slowly behind the head."], "m": "Don't let your elbows flare wide - keep them tracking forward.", "a": ["EZ-Bar Skull Crushers", "Bench Dips (assisted)"]}, "Overhead Tricep Extension (DB)": {"d": "Standing, single DB behind head with both hands. Extend arms up without flaring elbows.", "s": ["Hold one dumbbell with both hands overhead, elbows close to your ears.", "Lower it behind your head by bending only at the elbows.", "Extend back up to full lockout, squeezing the triceps."], "m": "Don't let elbows drift wide or flare out to the sides.", "a": ["Cable Overhead Extension", "Dumbbell Kickbacks"]}, "Mat Core / Knee Ups": {"d": "Lie on mat, bring knees to chest, extend legs straight without touching floor. Lower back pressed down.", "s": ["Lie on your back, hands under your hips or by your sides, lower back pressed into the mat.", "Bring your knees in toward your chest.", "Extend your legs out straight, hovering just above the floor, then repeat."], "m": "Don't let your lower back arch off the mat - reduce the range if it does.", "a": ["Reverse Crunch", "Kneeling Ab Wheel Rollout"]}, "Pull-Ups (Weighted / Assisted)": {"d": "Overhand grip, full hang to chin over bar. Use belt for weight or assisted machine.", "s": ["Grip overhand, just wider than shoulders, full dead hang.", "Pull your chest toward the bar until your chin clears it - lead with the elbows down.", "Lower all the way to a full hang with control."], "m": "Don't kip or do half reps - full range beats more reps.", "a": ["Lat Pulldown", "Assisted Pull-Up Machine"]}, "Seated Lat Pullover Machine": {"d": "Nautilus-style machine. Grip bar above head, pull down in arc to lap. Pure lat isolation.", "s": ["Sit with pads secured, grip the bar above your head, elbows soft.", "Pull the bar down in a smooth arc until it touches your lap.", "Squeeze your lats, return slowly overhead into a stretch."], "m": "Don't bend your elbows hard - keep the arc long and lat-driven.", "a": ["Straight-Arm Cable Pulldown", "Dumbbell Pullover"]}, "Reverse Cable Fly": {"d": "Cables at face height, NO attachments. Grab left cable with right hand & vice versa. Pull apart. Rear delts.", "s": ["Set pulleys at face height, grab the left cable ball in your right hand and vice versa, arms crossed in front.", "Pull your arms apart and back until they are wide, squeezing your rear delts.", "Return slowly to the crossed position."], "m": "Don't go too heavy - rear delts are small and like strict reps.", "a": ["Reverse Pec Deck", "Bent-Over Rear Delt Fly"]}, "Double Cable Bicep Curl": {"d": "Stand between two high cables. Curl hands towards ears - front double bicep pose.", "s": ["Stand centred between two high pulleys, a handle in each hand, arms out wide.", "Curl both hands toward your ears like hitting a double bicep pose.", "Squeeze hard at full contraction, return slowly to arms-wide."], "m": "Don't let your elbows drop - keep upper arms parallel to the floor.", "a": ["Incline Dumbbell Curl", "Barbell Curl"]}, "Rope Bicep Curl": {"d": "Low cable, rope attachment. Curl up and twist rope outward at top for peak contraction.", "s": ["Rope on the low pulley, hold an end in each hand, palms facing in.", "Curl up, pulling the rope ends apart at the top.", "Squeeze at the top, lower slowly with elbows pinned."], "m": "Don't let elbows swing forward to cheat the rep.", "a": ["Hammer Curl", "Single-Arm Cable Curl"]}, "Russian Twists": {"d": "Seated on floor, lean back 45 degrees, feet off ground. Rotate plate or DB side to side. 12 each side.", "s": ["Sit, lean back to about 45 degrees, feet lifted, holding a weight at your chest.", "Rotate your torso to tap the weight beside one hip.", "Rotate through centre to the other side - slow and controlled."], "m": "Don't just move your hands side to side - your chest must rotate.", "a": ["Cable Torso Rotation", "Bicycle Crunches"]}, "Cable Woodchops": {"d": "High cable, pull diagonally from high to low across body in a chopping motion. 12 each side.", "s": ["Stand side-on to a high pulley, grab the handle with both hands above the far shoulder.", "Pull diagonally down across your body to outside the opposite hip, rotating the torso.", "Control it back up along the same path."], "m": "Don't pull with straight stiff arms only - pivot your feet and rotate through the hips.", "a": ["Half-Kneeling Cable Chop", "Medicine Ball Rotational Throw"]}, "Leg Press": {"d": "Feet shoulder-width, mid-platform. Push through whole foot. Don't lock knees.", "s": ["Feet shoulder-width in the middle of the platform, back and hips flat in the seat.", "Lower the sled until knees are near 90 degrees.", "Push through your whole foot back up - stop just short of locking out."], "m": "Don't let your hips/butt lift off the seat at the bottom - shorten the range if needed.", "a": ["Hack Squat", "Smith Machine Squat"]}, "Goblet Squat": {"d": "Hold DB or kettlebell at chest, squat deep. Keeps you upright - great for quads & glutes.", "s": ["Hold a dumbbell or kettlebell vertically at your chest, elbows under it.", "Feet just outside shoulders, squat down between your knees, chest tall.", "Drive through your whole foot to stand, squeezing glutes at the top."], "m": "Don't let your knees cave inward - push them out over your toes.", "a": ["Leg Press (feet low)", "Bulgarian Split Squats"]}, "Single Leg Curl": {"d": "Lying or seated curl machine, one leg at a time. Fixes left/right imbalances.", "s": ["Set up on the curl machine with only one leg under the pad.", "Curl the heel to your glute, squeeze 1 second at the top.", "Lower slowly, then complete the other leg - start with your weaker side."], "m": "Don't rush - single-leg work exposes imbalances only if the tempo stays strict.", "a": ["Stability Ball Curl", "Single-Leg Romanian Deadlift"]}, "Cable Pull-Throughs": {"d": "Face AWAY from low cable, rope between legs. Hinge at hips, drive hips forward. Glutes & hamstrings.", "s": ["Face away from a low pulley, rope between your legs, held with both hands.", "Hinge at the hips, pushing them back, soft knees, flat back.", "Drive your hips forward to stand, squeezing glutes hard at the top."], "m": "Don't squat the movement - it is a hip hinge, not a squat.", "a": ["Kettlebell Swings", "Hip Thrust"]}, "Walking Lunges": {"d": "Hold DBs, step forward into lunge, drive up into next step. Continuous walking.", "s": ["Hold dumbbells at your sides, stand tall.", "Step forward into a deep lunge, back knee hovering just off the floor.", "Drive through the front heel and step straight into the next lunge."], "m": "Don't let the front knee cave in or your torso tip forward.", "a": ["Reverse Lunges", "Bulgarian Split Squats"]}, "Standing Calf Raises": {"d": "Smith machine or calf machine. Balls of feet on edge, push high, 2 sec hold at top.", "s": ["Balls of your feet on the platform/step edge, weight on your shoulders.", "Lower heels into a deep stretch below the step.", "Push as high as possible onto your toes, hold 2 seconds, lower slowly."], "m": "Don't do short bouncy reps - full stretch, full squeeze.", "a": ["Seated Calf Raise", "Single-Leg Calf Raise (on step)"]}};
+var WA_BASE = 'https://wa.me/16508702892?text=';
+var WKEY = 'gym_weights', SWKEY = 'gym_swaps';
+var ORIG_NAMES = {};
+
+function loadJSON(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch(e) { return {}; } }
+function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+
+function ytLink(name) { return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' proper form'); }
+
+function weekNum(id) { var m = /^w(\d+)-/.exec(id||''); return m ? parseInt(m[1],10) : 0; }
+function slotKey(id) { return (id||'').replace(/^w\d+-/, ''); }
+
+function enhanceAll() {
+  var weights = loadJSON(WKEY), swaps = loadJSON(SWKEY);
+  document.querySelectorAll('.exercise').forEach(function(row) {
+    var id = row.getAttribute('data-id');
+    var nameEl = row.querySelector('.ex-name');
+    if (!id || !nameEl) return;
+    var orig = nameEl.textContent.trim();
+    ORIG_NAMES[id] = orig;
+    if (swaps[id]) nameEl.textContent = swaps[id];
+    var cur = nameEl.textContent.trim();
+    var info = EXDB[cur] || EXDB[orig] || null;
+
+    /* fill missing descriptions (weeks 2 & 4) */
+    var desc = row.querySelector('.ex-desc');
+    if (!desc && info) {
+      desc = document.createElement('div');
+      desc.className = 'ex-desc';
+      desc.textContent = info.d;
+      row.querySelector('.ex-content').appendChild(desc);
+    }
+    if (swaps[id]) {
+      var note = document.createElement('div');
+      note.className = 'swapped-note';
+      note.textContent = 'Swapped in - original: ' + orig;
+      nameEl.parentNode.parentNode.insertBefore(note, nameEl.parentNode.nextSibling);
+    }
+
+    /* meta row: weight input + last-week hint + info button */
+    var content = row.querySelector('.ex-content');
+    var meta = document.createElement('div');
+    meta.className = 'ex-meta';
+    meta.innerHTML = '<input class="ex-kg" inputmode="decimal" placeholder="kg" aria-label="weight in kg">'
+      + '<span class="kg-label">kg</span><span class="ex-last"></span>'
+      + '<button type="button" class="ex-info-btn">?</button>';
+    content.appendChild(meta);
+    var kg = meta.querySelector('.ex-kg');
+    if (weights[id] != null) kg.value = weights[id];
+    kg.addEventListener('change', function() {
+      var w = loadJSON(WKEY);
+      var v = kg.value.trim();
+      if (v === '') { delete w[id]; } else { w[id] = v; }
+      saveJSON(WKEY, w);
+      renderLast(row);
+      kg.blur();
+    });
+    kg.addEventListener('click', function(e){ e.stopPropagation(); });
+    meta.querySelector('.ex-info-btn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var p = row.querySelector('.ex-info');
+      if (p) p.classList.toggle('open');
+    });
+
+    /* info panel */
+    var panel = document.createElement('div');
+    panel.className = 'ex-info';
+    var html = '';
+    if (info) {
+      html += diagramHTML(cur, orig);
+      html += '<ol>' + info.s.map(function(st){ return '<li>'+st+'</li>'; }).join('') + '</ol>';
+      html += '<div class="mistake"><b>Watch out:</b> ' + info.m + '</div>';
+    }
+    html += '<a class="demo-link" href="' + ytLink(cur) + '" target="_blank" rel="noopener">▶ Watch demo</a>';
+    if (info && info.a && info.a.length) {
+      html += '<div class="swap-label">Swap for variety</div>';
+      info.a.forEach(function(alt) {
+        if (alt !== cur) html += '<button type="button" class="swap-btn" data-swap="' + alt.replace(/"/g,'&quot;') + '">' + alt + '</button>';
+      });
+      if (swaps[id]) html += '<button type="button" class="swap-btn restore" data-swap="">↩ ' + orig + '</button>';
+    }
+    panel.innerHTML = html;
+    content.appendChild(panel);
+    panel.querySelectorAll('.swap-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var sw = loadJSON(SWKEY);
+        var target = btn.getAttribute('data-swap');
+        if (target) sw[id] = target; else delete sw[id];
+        saveJSON(SWKEY, sw);
+        rebuildRow(row);
+      });
+    });
+    renderLast(row);
+  });
+}
+
+function rebuildRow(row) {
+  /* re-render one row after a swap, preserving checkbox + weight */
+  var id = row.getAttribute('data-id');
+  var weights = loadJSON(WKEY), swaps = loadJSON(SWKEY);
+  row.querySelector('.ex-meta').remove();
+  var p = row.querySelector('.ex-info'); if (p) p.remove();
+  var n = row.querySelector('.swapped-note'); if (n) n.remove();
+  var nameEl = row.querySelector('.ex-name');
+  nameEl.textContent = swaps[id] || ORIG_NAMES[id];
+  var desc = row.querySelector('.ex-desc');
+  var cur = nameEl.textContent.trim();
+  var info = EXDB[cur] || EXDB[ORIG_NAMES[id]];
+  if (info && desc) desc.textContent = info.d;
+  /* re-run meta/panel injection for this row only */
+  enhanceRow(row);
+}
+
+function enhanceRow(row) {
+  /* single-row version used after swap: clone of enhanceAll's per-row body */
+  var saved = document.createElement('div');
+  saved.appendChild(row.cloneNode(false));
+  var id = row.getAttribute('data-id');
+  var container = row.parentNode;
+  var clone = row.cloneNode(true);
+  clone.querySelectorAll('.ex-meta,.ex-info,.swapped-note').forEach(function(x){ x.remove(); });
+  row.parentNode.replaceChild(clone, row);
+  enhanceOne(clone);
+}
+
+function enhanceOne(row) {
+  var weights = loadJSON(WKEY), swaps = loadJSON(SWKEY);
+  var id = row.getAttribute('data-id');
+  var nameEl = row.querySelector('.ex-name');
+  var orig = ORIG_NAMES[id] || nameEl.textContent.trim();
+  ORIG_NAMES[id] = orig;
+  var cur = nameEl.textContent.trim();
+  var info = EXDB[cur] || EXDB[orig] || null;
+  if (swaps[id]) {
+    var note = document.createElement('div');
+    note.className = 'swapped-note';
+    note.textContent = 'Swapped in - original: ' + orig;
+    nameEl.parentNode.parentNode.insertBefore(note, nameEl.parentNode.nextSibling);
+  }
+  var content = row.querySelector('.ex-content');
+  var meta = document.createElement('div');
+  meta.className = 'ex-meta';
+  meta.innerHTML = '<input class="ex-kg" inputmode="decimal" placeholder="kg" aria-label="weight in kg">'
+    + '<span class="kg-label">kg</span><span class="ex-last"></span>'
+    + '<button type="button" class="ex-info-btn">?</button>';
+  content.appendChild(meta);
+  var kg = meta.querySelector('.ex-kg');
+  var w0 = loadJSON(WKEY);
+  if (w0[id] != null) kg.value = w0[id];
+  kg.addEventListener('change', function() {
+    var w = loadJSON(WKEY);
+    var v = kg.value.trim();
+    if (v === '') { delete w[id]; } else { w[id] = v; }
+    saveJSON(WKEY, w);
+    renderLast(row);
+    kg.blur();
+  });
+  kg.addEventListener('click', function(e){ e.stopPropagation(); });
+  meta.querySelector('.ex-info-btn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    var p = row.querySelector('.ex-info');
+    if (p) p.classList.toggle('open');
+  });
+  var panel = document.createElement('div');
+  panel.className = 'ex-info';
+  var html = '';
+  if (info) {
+    html += diagramHTML(cur, orig);
+    html += '<ol>' + info.s.map(function(st){ return '<li>'+st+'</li>'; }).join('') + '</ol>';
+    html += '<div class="mistake"><b>Watch out:</b> ' + info.m + '</div>';
+  }
+  html += '<a class="demo-link" href="' + ytLink(cur) + '" target="_blank" rel="noopener">▶ Watch demo</a>';
+  if (info && info.a && info.a.length) {
+    html += '<div class="swap-label">Swap for variety</div>';
+    info.a.forEach(function(alt) {
+      if (alt !== cur) html += '<button type="button" class="swap-btn" data-swap="' + alt.replace(/"/g,'&quot;') + '">' + alt + '</button>';
+    });
+    if (swaps[id]) html += '<button type="button" class="swap-btn restore" data-swap="">↩ ' + orig + '</button>';
+  }
+  panel.innerHTML = html;
+  content.appendChild(panel);
+  panel.querySelectorAll('.swap-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var sw = loadJSON(SWKEY);
+      var target = btn.getAttribute('data-swap');
+      if (target) sw[id] = target; else delete sw[id];
+      saveJSON(SWKEY, sw);
+      enhanceRow(row);
+    });
+  });
+  renderLast(row);
+}
+
+function renderLast(row) {
+  var id = row.getAttribute('data-id');
+  var el = row.querySelector('.ex-last');
+  if (!el) return;
+  var w = loadJSON(WKEY);
+  var wk = weekNum(id), slot = slotKey(id);
+  var prevId = 'w' + (wk - 1) + '-' + slot;
+  el.textContent = ''; el.innerHTML = '';
+  if (wk > 1 && w[prevId] != null && ORIG_NAMES[prevId] === ORIG_NAMES[id]) {
+    var prev = parseFloat(w[prevId]), cur = parseFloat(w[id]);
+    var html = 'Last wk: ' + w[prevId] + 'kg';
+    if (!isNaN(cur) && !isNaN(prev)) {
+      if (cur > prev) html += ' <span class="up">▲ +' + (cur - prev) + '</span>';
+      else if (cur < prev) html += ' <span class="down">▼ ' + (cur - prev) + '</span>';
+      else html += ' <span class="same">=</span>';
+    }
+    el.innerHTML = html;
+  }
+}
+
+/* ---- progress modal ---- */
+function collectHistory() {
+  var w = loadJSON(WKEY);
+  var byName = {};
+  Object.keys(w).forEach(function(id) {
+    var row = document.querySelector('.exercise[data-id="' + id + '"]');
+    var name = row ? row.querySelector('.ex-name').textContent.trim() : (ORIG_NAMES[id] || id);
+    var kg = parseFloat(w[id]);
+    if (isNaN(kg) || kg <= 0) return;
+    if (!byName[name]) byName[name] = [];
+    byName[name].push({ w: weekNum(id), kg: kg });
+  });
+  Object.keys(byName).forEach(function(n) { byName[n].sort(function(a,b){ return a.w - b.w; }); });
+  return byName;
+}
+
+function openProgress() {
+  var hist = collectHistory();
+  var body = document.getElementById('progBody');
+  var names = Object.keys(hist);
+  if (!names.length) {
+    body.innerHTML = '<div class="prog-empty">No weights logged yet.<br>Type your kg into any exercise as you train - your progress chart builds itself here.</div>';
+  } else {
+    var html = '';
+    names.sort().forEach(function(name) {
+      var entries = hist[name];
+      var max = Math.max.apply(null, entries.map(function(e){ return e.kg; }));
+      html += '<div class="prog-row"><div class="prog-name">' + name + '</div><div class="prog-hist">';
+      entries.forEach(function(e, i) {
+        if (i) {
+          var d = entries[i].kg - entries[i-1].kg;
+          html += d > 0 ? ' <span class="up">▲</span> ' : (d < 0 ? ' <span class="down">▼</span> ' : ' · ');
+        }
+        html += 'W' + e.w + ' ' + e.kg + 'kg';
+      });
+      html += '</div><div class="prog-bars">';
+      entries.forEach(function(e) {
+        var h = Math.max(8, Math.round(e.kg / max * 44));
+        html += '<div class="prog-bar" style="height:' + h + 'px" title="W' + e.w + ': ' + e.kg + 'kg"><span>W' + e.w + '</span></div>';
+      });
+      html += '</div></div>';
+    });
+    body.innerHTML = html;
+  }
+  document.getElementById('progressModal').classList.add('open');
+}
+function closeProgress() { document.getElementById('progressModal').classList.remove('open'); }
+
+/* ---- sync to Instinct ---- */
+function buildLogText() {
+  var w = loadJSON(WKEY);
+  var ids = Object.keys(w).filter(function(id){ return w[id] !== '' && w[id] != null && parseFloat(w[id]) > 0; });
+  if (!ids.length) return '';
+  ids.sort(function(a,b){ return weekNum(a) - weekNum(b) || a.localeCompare(b); });
+  var lines = ['Workout log - 4-Week Programme (' + new Date().toISOString().slice(0,10) + ')'];
+  var lastWk = 0;
+  ids.forEach(function(id) {
+    var wk = weekNum(id);
+    if (wk !== lastWk) { lines.push('Week ' + wk + ':'); lastWk = wk; }
+    var row = document.querySelector('.exercise[data-id="' + id + '"]');
+    var name = row ? row.querySelector('.ex-name').textContent.trim() : id;
+    lines.push('- ' + name + ' ' + w[id] + 'kg');
+  });
+  return lines.join('\n');
+}
+
+function doSync(e) {
+  var text = buildLogText();
+  if (!text) {
+    e.preventDefault();
+    document.getElementById('syncNote').textContent = 'Nothing to send yet - log some weights first.';
+    return false;
+  }
+  document.getElementById('syncLink').href = WA_BASE + encodeURIComponent(text);
+  return true;
+}
+
+function copyLog() {
+  var text = buildLogText();
+  if (!text) {
+    document.getElementById('syncNote').textContent = 'Nothing to copy yet - log some weights first.';
+    return;
+  }
+  function ok() { document.getElementById('syncNote').textContent = 'Copied - paste it to Instinct anywhere.'; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(ok, function(){ fallbackCopy(text); ok(); });
+  } else { fallbackCopy(text); ok(); }
+}
+function fallbackCopy(t) {
+  var ta = document.createElement('textarea');
+  ta.value = t; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+
+/* ===== v3: stickman muscle + equipment diagrams ===== */
+var ZONES3 = {"Machine Incline Chest Press": ["chest", "deltF", "tri"], "Cable Chest Fly": ["chest"], "Machine Shoulder Press": ["deltF", "deltS", "tri"], "Dumbbell Lateral Raises": ["deltS"], "Cable Tricep Extension (Rope)": ["tri"], "Seated Tricep Push Downs": ["tri"], "Hanging Leg Raises": ["abs"], "Lat Pulldown": ["lats", "bi"], "Standing Cable Pullover": ["lats"], "Face Pulls": ["deltR", "uback"], "Cable Bicep Curl": ["bi"], "Hammer Curl": ["bi"], "Cable Twists": ["obliq", "abs"], "Dumbbell Leans": ["obliq"], "Hack Squat": ["quad", "glut"], "Leg Extensions": ["quad"], "Lying Leg Curl": ["hams"], "Glute Kickback Machine": ["glut"], "Seated Hip Abduction": ["glut"], "Seated Calf Raises": ["calf"], "Machine Crunches": ["abs"], "Seated Chest Press": ["chest", "tri"], "Cable Crossovers": ["chest"], "Standing Cable Shoulder Press": ["deltF", "deltS"], "Cable Front Delt Raises": ["deltF"], "Cable Overhead Tricep Extension": ["tri"], "Overhead Tricep Extension (DB)": ["tri"], "Mat Core / Knee Ups": ["abs"], "Pull-Ups (Weighted / Assisted)": ["lats", "bi"], "Seated Lat Pullover Machine": ["lats"], "Reverse Cable Fly": ["deltR"], "Double Cable Bicep Curl": ["bi"], "Rope Bicep Curl": ["bi"], "Russian Twists": ["obliq", "abs"], "Cable Woodchops": ["obliq"], "Leg Press": ["quad", "glut"], "Goblet Squat": ["quad", "glut"], "Single Leg Curl": ["hams"], "Cable Pull-Throughs": ["glut", "hams"], "Walking Lunges": ["quad", "glut"], "Standing Calf Raises": ["calf"]};
+var EQUIP3 = {"Machine Incline Chest Press": ["machine", "Machine"], "Cable Chest Fly": ["cable", "Cable station"], "Machine Shoulder Press": ["machine", "Machine"], "Dumbbell Lateral Raises": ["dumbbell", "Dumbbells"], "Cable Tricep Extension (Rope)": ["cable", "Cable station"], "Seated Tricep Push Downs": ["cable", "Cable station"], "Hanging Leg Raises": ["hangbar", "Pull-up bar / captain's chair"], "Lat Pulldown": ["machine", "Pulldown machine"], "Standing Cable Pullover": ["cable", "Cable station"], "Face Pulls": ["cable", "Cable station"], "Cable Bicep Curl": ["cable", "Cable station"], "Hammer Curl": ["dumbbell", "Dumbbells"], "Cable Twists": ["cable", "Cable station"], "Dumbbell Leans": ["dumbbell", "One dumbbell"], "Hack Squat": ["machine", "Hack squat machine"], "Leg Extensions": ["machine", "Leg extension machine"], "Lying Leg Curl": ["machine", "Leg curl machine"], "Glute Kickback Machine": ["machine", "Kickback machine"], "Seated Hip Abduction": ["machine", "Abduction machine"], "Seated Calf Raises": ["machine", "Seated calf machine"], "Machine Crunches": ["machine", "Crunch machine"], "Seated Chest Press": ["machine", "Chest press machine"], "Cable Crossovers": ["cable", "Cable station"], "Standing Cable Shoulder Press": ["cable", "Cable station"], "Cable Front Delt Raises": ["cable", "Cable station"], "Cable Overhead Tricep Extension": ["cable", "Cable station"], "Overhead Tricep Extension (DB)": ["dumbbell", "One dumbbell"], "Mat Core / Knee Ups": ["floor", "Mat / floor"], "Pull-Ups (Weighted / Assisted)": ["hangbar", "Pull-up bar / assist machine"], "Seated Lat Pullover Machine": ["machine", "Pullover machine"], "Reverse Cable Fly": ["cable", "Cable station"], "Double Cable Bicep Curl": ["cable", "Cable station"], "Rope Bicep Curl": ["cable", "Cable station"], "Russian Twists": ["plate", "Plate or dumbbell"], "Cable Woodchops": ["cable", "Cable station"], "Leg Press": ["machine", "Leg press machine"], "Goblet Squat": ["dumbbell", "Dumbbell or kettlebell"], "Single Leg Curl": ["machine", "Leg curl machine"], "Cable Pull-Throughs": ["cable", "Cable station"], "Walking Lunges": ["dumbbell", "Dumbbells"], "Standing Calf Raises": ["machine", "Smith / calf machine"]};
+var ZONE_LABEL = {chest:'Chest',deltF:'Front delts',deltS:'Side delts',deltR:'Rear delts',bi:'Biceps',tri:'Triceps',abs:'Abs',obliq:'Obliques',quad:'Quads',hams:'Hamstrings',glut:'Glutes',calf:'Calves',lats:'Lats',uback:'Upper back'};
+var ZONE_FRONT = {chest:1,deltF:1,deltS:1,bi:1,abs:1,obliq:1,quad:1};
+var ZSHAPE = {
+  chest:'<ellipse cx="30" cy="33" rx="8" ry="5"/>',
+  deltF:'<circle cx="16" cy="27" r="4"/><circle cx="44" cy="27" r="4"/>',
+  deltS:'<circle cx="13" cy="31" r="4"/><circle cx="47" cy="31" r="4"/>',
+  deltR:'<circle cx="16" cy="27" r="4"/><circle cx="44" cy="27" r="4"/>',
+  bi:'<ellipse cx="20" cy="37" rx="3.2" ry="6" transform="rotate(30 20 37)"/><ellipse cx="40" cy="37" rx="3.2" ry="6" transform="rotate(-30 40 37)"/>',
+  tri:'<ellipse cx="20" cy="37" rx="3.2" ry="6" transform="rotate(30 20 37)"/><ellipse cx="40" cy="37" rx="3.2" ry="6" transform="rotate(-30 40 37)"/>',
+  abs:'<rect x="25" y="40" width="10" height="15" rx="3"/>',
+  obliq:'<ellipse cx="20" cy="46" rx="3" ry="7"/><ellipse cx="40" cy="46" rx="3" ry="7"/>',
+  quad:'<ellipse cx="24" cy="76" rx="4" ry="10"/><ellipse cx="36" cy="76" rx="4" ry="10"/>',
+  hams:'<ellipse cx="24" cy="76" rx="4" ry="10"/><ellipse cx="36" cy="76" rx="4" ry="10"/>',
+  glut:'<ellipse cx="24" cy="63" rx="5" ry="6"/><ellipse cx="36" cy="63" rx="5" ry="6"/>',
+  calf:'<ellipse cx="23" cy="91" rx="3.5" ry="7"/><ellipse cx="37" cy="91" rx="3.5" ry="7"/>',
+  lats:'<ellipse cx="20" cy="35" rx="4" ry="9"/><ellipse cx="40" cy="35" rx="4" ry="9"/>',
+  uback:'<ellipse cx="30" cy="26" rx="8" ry="5"/>'
+};
+var EQ_SVG = {
+  machine:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><rect x="15" y="3" width="6" height="18" rx="1"/><line x1="15" y1="8" x2="21" y2="8"/><line x1="15" y1="12" x2="21" y2="12"/><rect x="3" y="13" width="8" height="4" rx="1"/><line x1="4" y1="13" x2="4" y2="6"/><line x1="5" y1="17" x2="5" y2="21"/><line x1="10" y1="17" x2="10" y2="21"/></svg>',
+  cable:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="2" width="5" height="20" rx="1"/><circle cx="6.5" cy="5" r="1.6"/><line x1="6.5" y1="5" x2="17" y2="13"/><rect x="16" y="12" width="4" height="6" rx="1"/></svg>',
+  dumbbell:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><rect x="2" y="8.5" width="3.5" height="7" rx="1"/><rect x="18.5" y="8.5" width="3.5" height="7" rx="1"/></svg>',
+  barbell:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><rect x="1.5" y="6" width="3" height="12" rx="1"/><rect x="19.5" y="6" width="3" height="12" rx="1"/><rect x="5.5" y="8" width="2.5" height="8" rx="1"/><rect x="16" y="8" width="2.5" height="8" rx="1"/></svg>',
+  hangbar:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><line x1="2" y1="4" x2="22" y2="4"/><line x1="3" y1="4" x2="3" y2="21"/><line x1="21" y1="4" x2="21" y2="21"/><circle cx="12" cy="9" r="2.4"/><line x1="12" y1="11.5" x2="12" y2="17"/><line x1="12" y1="13" x2="9" y2="15.5"/><line x1="12" y1="13" x2="15" y2="15.5"/><line x1="12" y1="17" x2="10" y2="21"/><line x1="12" y1="17" x2="14" y2="21"/></svg>',
+  floor:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="14" width="20" height="6" rx="3"/><circle cx="8" cy="10.5" r="2"/><line x1="10" y1="11" x2="16" y2="13"/></svg>',
+  plate:'<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.6"/><line x1="12" y1="5" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="19"/></svg>'
+};
+function equipFor(name) {
+  var n = name.toLowerCase();
+  if (/smith|machine|pec deck|pulldown|leg press|hack squat|leg extension|leg curl|abduction|calf raise|kickback|crunch machine|pullover|assisted pull/.test(n)) {
+    if (/assisted pull/.test(n)) return {g:'machine', l:'Assisted pull-up machine'};
+    return {g:'machine', l:'Machine'};
+  }
+  if (/cable|rope|band/.test(n)) return {g:'cable', l:'Cable station'};
+  if (/ez-bar|barbell|skull crusher|landmine/.test(n)) return {g:'barbell', l:'Bar / EZ-bar'};
+  if (/dumbbell|\bdb\b|kettlebell|goblet|hammer|lunge|split squat|front raise|kickbacks|kickback\(/.test(n)) return {g:'dumbbell', l:'Dumbbells'};
+  if (/pull-up|hanging|captain/.test(n)) return {g:'hangbar', l:'Pull-up bar'};
+  if (/plate/.test(n)) return {g:'plate', l:'Weight plate'};
+  if (/push-up|dip|plank|mat|floor|russian|bicycle|ab wheel|rollout|ball|clamshell|crunch|step|lying leg raise|reverse crunch|woodchop|twist|sissy/.test(n)) return {g:'floor', l:'Bodyweight / mat'};
+  return null;
+}
+function figSVG(zones, back) {
+  var s = '<svg viewBox="0 0 60 120" fill="none" stroke="#3a3a3a" stroke-width="3" stroke-linecap="round">'
+    + '<circle cx="30" cy="12" r="7"/>'
+    + '<path d="M30 20 L30 62"/>'
+    + '<path d="M30 28 L16 46"/><path d="M30 28 L44 46"/>'
+    + '<path d="M30 62 L21 100"/><path d="M30 62 L39 100"/>';
+  var lit = '';
+  zones.forEach(function(z) {
+    var isFront = !!ZONE_FRONT[z];
+    if (isFront !== !back) return;
+    if (ZSHAPE[z]) lit += ZSHAPE[z];
+  });
+  if (lit) s += '<g fill="#4dd0e1" stroke="none" opacity="0.9">' + lit + '</g>';
+  return s + '</svg>';
+}
+function diagramHTML(cur, orig) {
+  var zones = ZONES3[cur] || ZONES3[orig];
+  if (!zones || !zones.length) return '';
+  var eq = EQUIP3[cur] ? {g: EQUIP3[cur][0], l: EQUIP3[cur][1]} : (equipFor(cur) || (EQUIP3[orig] ? {g: EQUIP3[orig][0], l: EQUIP3[orig][1]} : null));
+  var h = '<div class="ex-diagram"><div class="dia-figs">'
+    + '<div><div class="dia-fig">' + figSVG(zones, false) + '</div><div class="dia-cap">FRONT</div></div>'
+    + '<div><div class="dia-fig">' + figSVG(zones, true) + '</div><div class="dia-cap">BACK</div></div></div>'
+    + '<div class="dia-side">';
+  if (eq) h += '<div class="dia-equip">' + (EQ_SVG[eq.g] || '') + '<span>' + eq.l + '</span></div>';
+  h += '<div class="dia-targets">Targets: ' + zones.map(function(z){ return '<b>' + (ZONE_LABEL[z]||z) + '</b>'; }).join(', ') + '</div>';
+  h += '</div></div>';
+  return h;
+}
+
+enhanceAll();
+
+</script>
+
+</body>
+</html>
+
+
