@@ -887,8 +887,11 @@ function enhanceOne(row) {
   var nameEl = row.querySelector('.ex-name');
   var orig = ORIG_NAMES[id] || nameEl.textContent.trim();
   ORIG_NAMES[id] = orig;
+  nameEl.textContent = swaps[id] || orig;
   var cur = nameEl.textContent.trim();
   var info = EXDB[cur] || EXDB[orig] || null;
+  var desc0 = row.querySelector('.ex-desc');
+  if (desc0 && info) desc0.textContent = info.d;
   if (swaps[id]) {
     var note = document.createElement('div');
     note.className = 'swapped-note';
