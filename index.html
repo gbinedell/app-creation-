@@ -1161,12 +1161,10 @@ function poseSVG(key) {
 
 function diagramHTML(cur, orig) {
   var zones = ZONES3[cur] || ZONES3[orig];
-  var pk = POSES[cur] || POSES[orig] || null;
-  if ((!zones || !zones.length) && !pk) return '';
+  if (!zones || !zones.length) return '';
   var eqm = EQUIP3[cur] || EQUIP_SWAPS[cur] || EQUIP3[orig] || EQUIP_SWAPS[orig] || null;
   var eq = eqm ? {g: eqm[0], l: eqm[1]} : equipFor(cur);
   var h = '<div class="ex-diagram"><div class="dia-main">';
-  if (pk) h += '<div class="dia-pose">' + poseSVG(pk) + '</div>';
   h += '<div class="dia-side">';
   if (eq) h += '<div class="dia-equip">' + (EQ_SVG[eq.g] || '') + '<span>' + eq.l + '</span></div>';
   if (zones && zones.length) h += '<div class="dia-targets">Targets: ' + zones.map(function(z){ return '<b>' + (ZONE_LABEL[z]||z) + '</b>'; }).join(', ') + '</div>';
@@ -1187,4 +1185,3 @@ enhanceAll();
 
 </body>
 </html>
-
