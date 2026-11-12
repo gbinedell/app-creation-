@@ -722,6 +722,18 @@ function resetWeek(weekId) {
     ex.querySelector('.ex-check').classList.remove('checked');
   });
   saveState();
+  // v8: Reset also returns this week's swapped exercises to the originals. Logged weights are kept.
+  var sw = loadJSON(SWKEY);
+  var reverted = [];
+  Object.keys(sw).forEach(function(id) {
+    if (id.indexOf(weekId + '-') === 0) { delete sw[id]; reverted.push(id); }
+  });
+  if (reverted.length) {
+    saveJSON(SWKEY, sw);
+    weekEl.querySelectorAll('.exercise').forEach(function(ex) {
+      if (reverted.indexOf(ex.getAttribute('data-id')) >= 0) enhanceRow(ex);
+    });
+  }
 }
 
 // Save state to localStorage
